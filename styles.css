@@ -1,23 +1,21 @@
 :root {
-  /* Colors from SQ3.io CSS */
-  --bg-color: #18181B; /* Zinc-900 */
-  --text-primary: #FAFAFA;
-  --text-secondary: #a1a1aa; /* Zinc-400 */
-  --primary-color: #6366f1; /* Indigo-500 */
-  --primary-glow: rgba(99, 102, 241, 0.4);
+  --bg-color: #09090b;
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --glass-bg: #111113;
+  --glass-border: rgba(39, 39, 42, 0.5);
+  --glass-hover-bg: #18181b;
 
-  /* Solid Dark Theme - FAQ Match */
-  --glass-bg: #27272a; /* Zinc-900 (Card/Button) */
-  --glass-border: #27272A; /* Zinc-800 (Border) */
-  --glass-hover-bg: #27272A; /* Zinc-800 on hover */
-  --glass-hover-border: #3F3F46; /* Zinc-700 */
+  /* Responsive Width Logic */
+  --container-max-width: 440px;
+  --container-padding-x: 1.5rem;
 
-  /* Spacing */
-  --container-width: 680px;
-  --card-padding: 1rem 1.5rem;
-  --border-radius: 10px; /* SQ3 uses 0.625rem = 10px */
+  --plus-size: 14px;
+  --plus-thickness: 1px;
+  --card-height: 46px;
 }
 
+/* Base Reset */
 * {
   margin: 0;
   padding: 0;
@@ -25,273 +23,232 @@
 }
 
 body {
-  font-family: "Geist Sans", "Geist", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-family: "Geist Sans", sans-serif;
   background-color: var(--bg-color);
   color: var(--text-primary);
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  position: relative;
+  align-items: center;
+  padding: 1rem; /* Prevents card from touching screen edges */
   overflow-x: hidden;
 }
 
-code, pre, kbd, samp {
-  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-}
-
-/* Blueprint Grid - SQ3.io Style (4-Line System) */
+/* Fading Grid Background */
 .background-mesh {
-  display: block;
-  position: absolute;
-  inset: 0; /* Fills entire body height, including scrollable content */
+  position: fixed;
+  inset: 0;
   z-index: -1;
   pointer-events: none;
-  
-  /* 4 Vertical Guidelines matching sq3.io structure */
-  background-image:
-    /* Outer left edge (container left) */
-    linear-gradient(to right, var(--glass-border) 1px, transparent 1px),
-    /* Inner left guideline (24px inside) */
-    linear-gradient(to right, var(--glass-border) 1px, transparent 1px),
-    /* Inner right guideline (24px inside) */
-    linear-gradient(to right, var(--glass-border) 1px, transparent 1px),
-    /* Outer right edge (container right) */
-    linear-gradient(to right, var(--glass-border) 1px, transparent 1px);
-    
-  background-size: 1px 100%;
-  background-position:
-    calc(50% - 340px) 0,      /* Left edge */
-    calc(50% - 340px + 24px) 0, /* Left inner */
-    calc(50% + 340px - 24px) 0, /* Right inner */
-    calc(50% + 340px) 0;        /* Right edge */
-  background-repeat: no-repeat;
+  background-image: linear-gradient(
+      to right,
+      var(--glass-border) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, var(--glass-border) 1px, transparent 1px);
+  background-size: 50% 100%, 100% 40px;
+  background-position: center center;
+  mask-image: radial-gradient(circle at center, black 40%, transparent 90%);
+  -webkit-mask-image: radial-gradient(
+    circle at center,
+    black 40%,
+    transparent 90%
+  );
   opacity: 0.4;
 }
 
+/* Grid Wrapper: Controls the + icons and container width */
+.grid-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+}
+
+/* Plus Icon Components */
+.plus-icon {
+  position: absolute;
+  width: var(--plus-size);
+  height: var(--plus-size);
+  z-index: 10;
+  color: #52525b;
+}
+
+.plus-icon::before,
+.plus-icon::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.plus-icon::before {
+  width: 100%;
+  height: var(--plus-thickness);
+}
+.plus-icon::after {
+  width: var(--plus-thickness);
+  height: 100%;
+}
+
+.top-left {
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+.top-right {
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+}
+.bottom-left {
+  bottom: 0;
+  left: 0;
+  transform: translate(-50%, 50%);
+}
+.bottom-right {
+  bottom: 0;
+  right: 0;
+  transform: translate(50%, 50%);
+}
+
+/* Main Card Container */
 .container {
   width: 100%;
-  max-width: var(--container-width);
-  padding: 2rem;
+  padding: 2.25rem var(--container-padding-x);
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  position: relative;
-  z-index: 1;
-}
-
-/* Header */
-.profile-header {
-  text-align: center;
-  animation: fadeInDown 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.logo-container {
-  width: 96px;
-  height: 96px;
-  margin: 0 auto 0.75rem;
-  border-radius: 50%;
-  /* gradient border handled by background + padding usually, but here removing padding for fill */
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.1),
-    rgba(255, 255, 255, 0.05)
-  );
-  /* padding: 24px; Removed to fill the circle */
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  gap: 1.5rem;
   border: 1px solid var(--glass-border);
-  overflow: hidden; /* Ensure image stays in circle */
+  background-color: rgba(9, 9, 11, 0.85);
+  backdrop-filter: blur(16px);
+}
+
+/* Full-width Divider Line */
+.divider-line {
+  height: 1px;
+  background: var(--glass-border);
+  width: calc(100% + (var(--container-padding-x) * 2));
+  margin-left: calc(var(--container-padding-x) * -1);
+}
+
+/* Header & Links */
+.logo-container {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 1.25rem;
 }
 
 .profile-logo {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  /* Invert logo assuming it is dark text based on dark mode context, 
-       but if it's already white/colored, this might need adjustment via JS or manual inspection.
-       Based on the "purple" theme user description, let's keep it as is. */
+  object-fit: contain;
 }
 
 .profile-name {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
-  letter-spacing: -0.02em;
-  color: #fafafa;
+  text-align: center;
+  letter-spacing: -0.04em;
+  margin-bottom: 0.25rem;
 }
 
 .profile-bio {
   color: var(--text-secondary);
-  font-size: 1rem;
-  line-height: 1.5;
-  max-width: 400px;
+  font-size: 0.875rem;
+  text-align: center;
+  max-width: 320px;
   margin: 0 auto;
+  line-height: 1.4;
 }
 
-/* Links */
 .links-container {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  width: 100%;
-  padding: 0 0.3rem; /* Horizontal padding to create space from vertical grid lines */
+  gap: 0.6rem;
 }
 
 .link-card {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: var(--card-padding);
+  height: var(--card-height);
+  padding: 0 1rem;
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
-  border-radius: var(--border-radius);
   text-decoration: none;
   color: var(--text-primary);
-  transition: all 0.2s ease-in-out;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   position: relative;
   overflow: hidden;
-
-  /* Animation delay stagger setup via nth-child would go here or inline */
-  animation: fadeInUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
-}
-
-/* Staggered Animations */
-.link-card:nth-child(1) {
-  animation-delay: 0.1s;
-}
-.link-card:nth-child(2) {
-  animation-delay: 0.2s;
-}
-.link-card:nth-child(3) {
-  animation-delay: 0.3s;
-}
-.link-card:nth-child(4) {
-  animation-delay: 0.4s;
-}
-.link-card:nth-child(5) {
-  animation-delay: 0.5s;
 }
 
 .link-card:hover {
   background: var(--glass-hover-bg);
-  border-color: var(--glass-hover-border);
-  transform: translateY(-1px);
-  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); Removed to match flat/technical look of screenshot */
-  box-shadow: none;
+  border-color: #3f3f46;
 }
 
-/* Removed Shine Effect to match flat/clean marketing aesthetic */
-
+/* Icon & Text Alignment */
 .icon-wrapper {
+  width: 18px;
+  height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-primary); /* Icons white as per screenshot */
-  transition: color 0.3s ease;
-}
-
-.link-card:hover .icon-wrapper {
-  color: var(--text-primary); /* Keep white on hover */
+  position: absolute;
+  left: 1rem;
+  color: var(--text-secondary);
 }
 
 .link-text {
   flex-grow: 1;
   text-align: center;
-  font-weight: 600; /* Match semi-bold look */
-  font-size: 1rem;
+  font-weight: 500;
+  font-size: 0.85rem; /* Slightly smaller for mobile fit */
 }
 
-.share-icon {
+/* Animated Arrow indicator */
+.arrow-icon {
+  width: 14px;
+  height: 14px;
+  position: absolute;
+  right: 1rem;
+  color: var(--text-secondary);
   opacity: 0;
-  transform: translateX(-10px);
-  transition: all 0.3s ease;
-  color: var(--text-secondary);
+  transform: translate(-10px, 10px);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.link-card:hover .share-icon {
+.link-card:hover .arrow-icon {
   opacity: 1;
-  transform: translateX(0);
+  transform: translate(0, 0);
+  color: var(--text-primary);
 }
 
-/* Footer */
 .footer {
-  width: 100%;
   text-align: center;
-  padding-top: 1rem; /* Reduced from 2rem */
   color: var(--text-secondary);
-  font-size: 0.875rem;
-  opacity: 0.6;
+  font-size: 0.75rem;
+  opacity: 0.7;
 }
 
-/* Horizontal Divider Lines - Full Width Between Grid */
-.divider-line {
-  width: calc(100% + 4rem); /* Extend beyond padding */
-  height: 1px;
-  background-color: var(--glass-border);
-  margin: -0.52rem -2rem; /* No vertical spacing - absolutely minimal */
-  opacity: 0.4; /* Match vertical line opacity */
-}
+/* Mobile-Specific Refinements */
+@media (max-width: 480px) {
+  :root {
+    --container-padding-x: 1rem; /* Slimmer padding for tiny screens */
+    --card-height: 44px;
+  }
 
-/* Animations Keyframes */
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsiveness */
-@media (max-width: 768px) {
   .container {
-    padding: 1.5rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
   }
 
   .profile-name {
-    font-size: 1.75rem;
+    font-size: 1.25rem;
   }
 
-  .link-card {
-    padding: 1rem;
-  }
-  
-  .links-container {
-    padding: 0 0.8rem; /* Ensure spacing from vertical grid lines on mobile */
-  }
-  
-  /* Mobile Grid - Two vertical lines at edges */
-  .background-mesh {
-    /* Override desktop 4-line system with 2-line mobile system */
-    background-image:
-      /* Left line - 24px from viewport edge */
-      linear-gradient(to right, var(--glass-border) 1px, transparent 1px),
-      /* Right line - 24px from viewport edge */
-      linear-gradient(to right, var(--glass-border) 1px, transparent 1px);
-      
-    background-size: 1px 100%;
-    background-position:
-      24px 0,           /* Left: 24px from edge */
-      calc(100% - 24px) 0; /* Right: 24px from edge */
-    background-repeat: no-repeat;
+  .link-text {
+    font-size: 0.8rem;
   }
 }
