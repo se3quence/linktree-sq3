@@ -1,21 +1,21 @@
 :root {
-  /* Colors */
-  --bg-color: #050505;
-  --text-primary: #ffffff;
-  --text-secondary: #a1a1aa;
+  /* Colors from SQ3.io CSS */
+  --bg-color: #18181B; /* Zinc-900 */
+  --text-primary: #FAFAFA;
+  --text-secondary: #a1a1aa; /* Zinc-400 */
   --primary-color: #6366f1; /* Indigo-500 */
   --primary-glow: rgba(99, 102, 241, 0.4);
 
-  /* Glassmorphism */
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-hover-bg: rgba(255, 255, 255, 0.08);
-  --glass-hover-border: rgba(255, 255, 255, 0.2);
+  /* Solid Dark Theme - FAQ Match */
+  --glass-bg: #27272a; /* Zinc-900 (Card/Button) */
+  --glass-border: #27272A; /* Zinc-800 (Border) */
+  --glass-hover-bg: #27272A; /* Zinc-800 on hover */
+  --glass-hover-border: #3F3F46; /* Zinc-700 */
 
   /* Spacing */
   --container-width: 680px;
   --card-padding: 1rem 1.5rem;
-  --border-radius: 16px;
+  --border-radius: 10px; /* SQ3 uses 0.625rem = 10px */
 }
 
 * {
@@ -25,7 +25,7 @@
 }
 
 body {
-  font-family: "Outfit", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Geist Sans", "Geist", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   background-color: var(--bg-color);
   color: var(--text-primary);
   min-height: 100vh;
@@ -37,37 +37,37 @@ body {
   overflow-x: hidden;
 }
 
-/* Background Mesh Gradient - Lightweight CSS implementation */
-.background-mesh {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1;
-  background: radial-gradient(
-      circle at 15% 50%,
-      rgba(76, 29, 149, 0.15),
-      transparent 25%
-    ),
-    radial-gradient(
-      circle at 85% 30%,
-      rgba(99, 102, 241, 0.15),
-      transparent 25%
-    );
-  filter: blur(40px);
-  animation: pulseBackground 10s ease-in-out infinite alternate;
+code, pre, kbd, samp {
+  font-family: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-@keyframes pulseBackground {
-  0% {
-    opacity: 0.5;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0.8;
-    transform: scale(1.1);
-  }
+/* Blueprint Grid - SQ3.io Style (4-Line System) */
+.background-mesh {
+  display: block;
+  position: absolute;
+  inset: 0; /* Fills entire body height, including scrollable content */
+  z-index: -1;
+  pointer-events: none;
+  
+  /* 4 Vertical Guidelines matching sq3.io structure */
+  background-image:
+    /* Outer left edge (container left) */
+    linear-gradient(to right, var(--glass-border) 1px, transparent 1px),
+    /* Inner left guideline (24px inside) */
+    linear-gradient(to right, var(--glass-border) 1px, transparent 1px),
+    /* Inner right guideline (24px inside) */
+    linear-gradient(to right, var(--glass-border) 1px, transparent 1px),
+    /* Outer right edge (container right) */
+    linear-gradient(to right, var(--glass-border) 1px, transparent 1px);
+    
+  background-size: 1px 100%;
+  background-position:
+    calc(50% - 340px) 0,      /* Left edge */
+    calc(50% - 340px + 24px) 0, /* Left inner */
+    calc(50% + 340px - 24px) 0, /* Right inner */
+    calc(50% + 340px) 0;        /* Right edge */
+  background-repeat: no-repeat;
+  opacity: 0.4;
 }
 
 .container {
@@ -90,27 +90,29 @@ body {
 .logo-container {
   width: 96px;
   height: 96px;
-  margin: 0 auto 1.5rem;
+  margin: 0 auto 0.75rem;
   border-radius: 50%;
-  /* Gradient border for logo */
+  /* gradient border handled by background + padding usually, but here removing padding for fill */
   background: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.1),
     rgba(255, 255, 255, 0.05)
   );
-  padding: 24px;
+  /* padding: 24px; Removed to fill the circle */
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
   border: 1px solid var(--glass-border);
+  overflow: hidden; /* Ensure image stays in circle */
 }
 
 .profile-logo {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   /* Invert logo assuming it is dark text based on dark mode context, 
        but if it's already white/colored, this might need adjustment via JS or manual inspection.
        Based on the "purple" theme user description, let's keep it as is. */
@@ -121,9 +123,7 @@ body {
   font-weight: 600;
   margin-bottom: 0.5rem;
   letter-spacing: -0.02em;
-  background: linear-gradient(to right, #fff, #a5b4fc);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #fafafa;
 }
 
 .profile-bio {
@@ -140,6 +140,7 @@ body {
   flex-direction: column;
   gap: 1rem;
   width: 100%;
+  padding: 0 0.3rem; /* Horizontal padding to create space from vertical grid lines */
 }
 
 .link-card {
@@ -152,7 +153,7 @@ body {
   border-radius: var(--border-radius);
   text-decoration: none;
   color: var(--text-primary);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: all 0.2s ease-in-out;
   position: relative;
   overflow: hidden;
 
@@ -180,48 +181,30 @@ body {
 .link-card:hover {
   background: var(--glass-hover-bg);
   border-color: var(--glass-hover-border);
-  transform: translateY(-2px) scale(1.01);
-  box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.2);
+  transform: translateY(-1px);
+  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); Removed to match flat/technical look of screenshot */
+  box-shadow: none;
 }
 
-.link-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.05),
-    transparent
-  );
-  transform: translateX(-100%);
-  transition: 0.5s;
-}
-
-.link-card:hover::before {
-  transform: translateX(100%);
-}
+/* Removed Shine Effect to match flat/clean marketing aesthetic */
 
 .icon-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-secondary);
+  color: var(--text-primary); /* Icons white as per screenshot */
   transition: color 0.3s ease;
 }
 
 .link-card:hover .icon-wrapper {
-  color: var(--primary-color);
+  color: var(--text-primary); /* Keep white on hover */
 }
 
 .link-text {
   flex-grow: 1;
   text-align: center;
-  font-weight: 500;
-  font-size: 1.05rem;
+  font-weight: 600; /* Match semi-bold look */
+  font-size: 1rem;
 }
 
 .share-icon {
@@ -240,10 +223,19 @@ body {
 .footer {
   width: 100%;
   text-align: center;
-  padding-top: 2rem;
+  padding-top: 1rem; /* Reduced from 2rem */
   color: var(--text-secondary);
   font-size: 0.875rem;
   opacity: 0.6;
+}
+
+/* Horizontal Divider Lines - Full Width Between Grid */
+.divider-line {
+  width: calc(100% + 4rem); /* Extend beyond padding */
+  height: 1px;
+  background-color: var(--glass-border);
+  margin: -0.52rem -2rem; /* No vertical spacing - absolutely minimal */
+  opacity: 0.4; /* Match vertical line opacity */
 }
 
 /* Animations Keyframes */
@@ -281,5 +273,25 @@ body {
 
   .link-card {
     padding: 1rem;
+  }
+  
+  .links-container {
+    padding: 0 0.8rem; /* Ensure spacing from vertical grid lines on mobile */
+  }
+  
+  /* Mobile Grid - Two vertical lines at edges */
+  .background-mesh {
+    /* Override desktop 4-line system with 2-line mobile system */
+    background-image:
+      /* Left line - 24px from viewport edge */
+      linear-gradient(to right, var(--glass-border) 1px, transparent 1px),
+      /* Right line - 24px from viewport edge */
+      linear-gradient(to right, var(--glass-border) 1px, transparent 1px);
+      
+    background-size: 1px 100%;
+    background-position:
+      24px 0,           /* Left: 24px from edge */
+      calc(100% - 24px) 0; /* Right: 24px from edge */
+    background-repeat: no-repeat;
   }
 }
