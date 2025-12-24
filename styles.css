@@ -252,3 +252,74 @@ body {
     font-size: 0.8rem;
   }
 }
+
+/* --- High-End Textured Background --- */
+body {
+  background-color: #050505; /* Deeper black for better contrast */
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Layer 1: Grainy Noise Overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.03; /* Very subtle grain */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Layer 2: Shiny Radial Glow & Soft Scanlines */
+.background-mesh {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+
+  /* Primary Glow */
+  background: 
+    /* Subtle Indigo Glow in the center for "Shine" */ radial-gradient(
+      circle at 50% 50%,
+      rgba(99, 102, 241, 0.08) 0%,
+      transparent 50%
+    ),
+    /* Secondary Deep Glow */
+      radial-gradient(
+        circle at 50% -10%,
+        rgba(255, 255, 255, 0.03) 0%,
+        transparent 40%
+      ),
+    /* Dark Base Gradient */ linear-gradient(to bottom, #09090b, #050505);
+
+  /* Horizontal Scanline Texture */
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 1px,
+    rgba(255, 255, 255, 0.01) 1px,
+    rgba(255, 255, 255, 0.01) 2px
+  );
+  background-size: 100% 3px;
+}
+
+/* Enhanced Glass Effect for the Main Card */
+.container {
+  width: 100%;
+  padding: 2.25rem var(--container-padding-x);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  /* Semi-transparent border with a slight top-light highlight */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.15); /* "Shine" on the top edge */
+
+  background-color: rgba(9, 9, 11, 0.75);
+  backdrop-filter: blur(20px); /* Heavier blur for frosted glass look */
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(99, 102, 241, 0.03); /* Extremely subtle indigo outer glow */
+}
